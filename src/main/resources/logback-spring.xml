@@ -1,0 +1,33 @@
+<configuration>
+    <!-- Консольный аппендер -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                {"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}", "level":"%level", "thread":"%thread", "logger":"%logger{36}", "requestId":"%X{requestId}", "message":"%msg"}%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logstash аппендер -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5001</destination>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp />
+                <pattern>
+                    <pattern>
+                        {"level":"%level","logger":"%logger","thread":"%thread","message":"%message","requestId":"%X{requestId}","exception":"%ex"}
+                    </pattern>
+                </pattern>
+                <arguments />
+                <stackTrace />
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- Логгеры -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="LOGSTASH" />
+    </root>
+</configuration>
